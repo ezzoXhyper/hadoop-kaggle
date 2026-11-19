@@ -1,3 +1,43 @@
+# Marché des transferts de football
+
+**Auteur · Yasser Ezzonfari** (GitHub · ezzoXhyper)
+
+## Documentation technique
+
+Quels championnats recrutent entre eux et comment se répartissent les indemnités enregistrées ? Le projet croise cinq tables du [dataset de transferts de football](https://www.kaggle.com/datasets/otaviofbrito/soccer-player-transfer-dataset) et présente les résultats dans Streamlit.
+
+### Lancer le tableau de bord depuis GitHub
+
+Sur la machine du correcteur, démarrer Docker avec Compose et ouvrir un terminal Linux ou WSL équipé de Git et de mise. Depuis une nouvelle copie du projet, exécuter les commandes suivantes.
+
+```bash
+git clone https://github.com/ezzoXhyper/hadoop-kaggle.git
+cd hadoop-kaggle
+mise trust && mise install
+mise exec -- task up
+mise exec -- task test:docker
+mise exec -- task test:notebooks
+```
+
+La première exécution télécharge le dataset depuis Kaggle et construit les tables sur HDFS. Une fois J4 terminé, ouvrir [le dashboard Streamlit](http://localhost:8501). Choisir 2023 pour explorer les flux, comparer les filières de recrutement et lire le classement des championnats. Les liens localhost fonctionnent sur la machine qui exécute Docker. Pour consulter le code et les sorties enregistrées sans installer le cluster, ouvrir les notebooks ci-dessous sur GitHub.
+
+### Du fichier brut au graphique
+
+| Étape | Traitement | Résultat |
+|---|---|---|
+| [J1 · Bronze](notebooks/J1_HDFS_Ingestion_Bronze.ipynb) | Ingestion HDFS des transferts, joueurs, clubs, ligues et affiliations par saison | Cinq tables Delta traçables |
+| [J2 · Silver](notebooks/J2_Spark_Delta_Silver.ipynb) | Exploration des années, des types et des montants, nettoyage et jointures sur les identifiants | 3 469 314 transferts dans la table Silver |
+| [J3 · Gold](notebooks/J3_Analytics_SQL_Gold.ipynb) | Rattachement des clubs aux ligues par année, médiane, dispersion, classement de Pareto, évolutions et flux | 757 798 mouvements avec une ligue identifiée aux deux extrémités |
+| [J4 · Statistiques et segmentation](notebooks/J4_Stats_Segmentation_Dashboard.ipynb) | Tests de Mann–Whitney et de Spearman, segmentation K-means | 419 clubs répartis en trois profils |
+
+Le [dashboard](app/dashboard.py) lit les tables Delta de la couche Gold. Les analyses SQL sont dans [football_sql.py](app/football_sql.py). Les flux couvrent 21,8 % des transferts recensés. Un montant codé à zéro ne suffit pas à conclure à un transfert gratuit. La médiane de 450 000 porte sur les 58 755 indemnités strictement positives.
+
+### Vérifier la tolérance aux pannes de J1
+
+Avec les trois DataNodes actifs, relever les emplacements des blocs avec `task hdfs:fsck`. Arrêter le deuxième nœud avec `task hdfs:crash-dn2`. Une fois la panne détectée dans [le NameNode](http://localhost:9870), exécuter la lecture de l’exercice 4.1 dans [JupyterLab](http://localhost:8888/lab/tree/notebooks) et comparer les emplacements des répliques. Relancer le nœud avec `task hdfs:restore-dn2` puis contrôler `task status` et `task hdfs:fsck`. La lecture enregistrée dans J1 ne documente pas à elle seule l’état des DataNodes pendant le test.
+
+---
+
 # TP Big Data Lakehouse — HDFS (3 DataNodes) + PySpark + Delta Lake + Streamlit
 
 Environnement pédagogique complet compatible nativement **`linux/amd64` (PC x86_64 / WSL2)** et **`linux/arm64` (Apple Silicon M1–M4 / Linux ARM64)** sur **Ubuntu 26.04 LTS**, reposant sur un **cluster HDFS 3.5 réel distribué (1 NameNode + 3 DataNodes)** avec blocs réduits à **16 Mo** et détection de panne abaissée à **~50 secondes**, couplé à une image mutualisée légère (`ubuntu:26.04` + **Python 3.15** via `uv` + OpenJDK 21 + JARs Delta pré-embarqués) pour **PySpark 4.2**, **Delta Lake 4.4**, **JupyterLab 4.6** et **Streamlit**.
