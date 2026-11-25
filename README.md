@@ -36,7 +36,7 @@ Le [dashboard](app/dashboard.py) lit les tables Delta de la couche Gold. Les ana
 
 ### Vérifier la tolérance aux pannes de J1
 
-Avec les trois DataNodes actifs, relever les emplacements des blocs avec `task hdfs:fsck`. Arrêter le deuxième nœud avec `task hdfs:crash-dn2`. Une fois la panne détectée dans [le NameNode](http://localhost:9870), exécuter la lecture de l’exercice 4.1 dans [JupyterLab](http://localhost:8888/lab/tree/notebooks) et comparer les emplacements des répliques. Relancer le nœud avec `task hdfs:restore-dn2` puis contrôler `task status` et `task hdfs:fsck`. La lecture enregistrée dans J1 ne documente pas à elle seule l’état des DataNodes pendant le test.
+Avec les trois DataNodes actifs, relever les emplacements des blocs avec `task hdfs:fsck`. Arrêter le deuxième nœud avec `task hdfs:crash-dn2`. Une fois la panne détectée dans [le NameNode](http://localhost:9870), exécuter la lecture de l’exercice 4.1 dans [JupyterLab](http://localhost:8888/lab/tree/notebooks) et comparer les emplacements des répliques. Relancer le nœud avec `task hdfs:restore-dn2` puis contrôler `task status` et `task hdfs:fsck`. Les observations du test figurent dans la conclusion de l’exercice 4.1 du notebook J1.
 
 ---
 
