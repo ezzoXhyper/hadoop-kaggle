@@ -197,8 +197,8 @@ else:
     line.update_yaxes(tickformat=".0%")
     line.add_hline(y=0.8, line_dash="dot")
     st.plotly_chart(line, width="stretch")
-explain(queries.PARETO, "Le seuil de 80 % indique combien de championnats concentrent "
-        "l’essentiel des indemnités connues pour l’année sélectionnée.")
+explain(queries.PARETO, "La ligne pointillée montre à partir de combien de championnats on atteint "
+        "80 % du total enregistré pour l’année. Ce calcul retient les transferts dont le championnat d’arrivée est identifié.")
 
 st.subheader("Évolution des transferts")
 if not annual.empty:

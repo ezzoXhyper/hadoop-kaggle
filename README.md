@@ -4,7 +4,7 @@
 
 ## Documentation technique
 
-Quels championnats recrutent entre eux et comment se répartissent les indemnités enregistrées ? Le projet croise cinq tables du [dataset de transferts de football](https://www.kaggle.com/datasets/otaviofbrito/soccer-player-transfer-dataset) et présente les résultats dans Streamlit.
+J’ai choisi le marché des transferts pour voir d’où viennent les joueurs recrutés par les clubs et quels championnats concentrent les indemnités. Je croise cinq tables et je présente les résultats dans Streamlit. [Source des données sur Kaggle](https://www.kaggle.com/datasets/otaviofbrito/soccer-player-transfer-dataset)
 
 ### Lancer le tableau de bord depuis GitHub
 
@@ -19,7 +19,9 @@ mise exec -- task test:docker
 mise exec -- task test:notebooks
 ```
 
-La première exécution télécharge le dataset depuis Kaggle et construit les tables sur HDFS. Une fois J4 terminé, ouvrir [le dashboard Streamlit](http://localhost:8501). Choisir 2023 pour explorer les flux, comparer les filières de recrutement et lire le classement des championnats. Les liens localhost fonctionnent sur la machine qui exécute Docker. Pour consulter le code et les sorties enregistrées sans installer le cluster, ouvrir les notebooks ci-dessous sur GitHub.
+La première exécution télécharge le dataset depuis Kaggle et construit les tables sur HDFS. Les notebooks s’exécutent dans l’ordre J1 → J2 → J3 → J4. Une fois J4 terminé, choisir 2023 dans Streamlit pour explorer les filières de recrutement et le classement des championnats. L’adresse locale s’ouvre sur la machine qui exécute Docker. [Ouvrir le tableau de bord](http://localhost:8501)
+
+Sur GitHub, les liens ci-dessous donnent accès au code et aux résultats enregistrés dans les notebooks.
 
 ### Du fichier brut au graphique
 
@@ -30,7 +32,7 @@ La première exécution télécharge le dataset depuis Kaggle et construit les t
 | [J3 · Gold](notebooks/J3_Analytics_SQL_Gold.ipynb) | Rattachement des clubs aux ligues par année, médiane, dispersion, classement de Pareto, évolutions et flux | 757 798 mouvements avec une ligue identifiée aux deux extrémités |
 | [J4 · Statistiques et segmentation](notebooks/J4_Stats_Segmentation_Dashboard.ipynb) | Tests de Mann–Whitney et de Spearman, segmentation K-means | 419 clubs répartis en trois profils |
 
-Le [dashboard](app/dashboard.py) lit les tables Delta de la couche Gold. Les analyses SQL sont dans [football_sql.py](app/football_sql.py). Les flux couvrent 21,8 % des transferts recensés. Un montant codé à zéro ne suffit pas à conclure à un transfert gratuit. La médiane de 450 000 porte sur les 58 755 indemnités strictement positives.
+Le [dashboard](app/dashboard.py) lit les tables Delta de la couche Gold. Les analyses SQL sont dans [football_sql.py](app/football_sql.py). Les flux couvrent les 21,8 % de transferts pour lesquels les deux championnats ont été identifiés. Le Pareto utilise les transferts dont le championnat d’arrivée est identifié. Un montant codé à zéro ne suffit pas à conclure à un transfert gratuit. La médiane de 450 000 porte sur les 58 755 indemnités strictement positives.
 
 ### Vérifier la tolérance aux pannes de J1
 
